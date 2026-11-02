@@ -1,0 +1,308 @@
+
+.cadastro-membro,
+.cadastro-membro * {
+    box-sizing: border-box;
+}
+
+.cadastro-membro {
+    --cadastro-purple: #5423F7;
+    --cadastro-blue: #244FB2;
+    --cadastro-teal: #0A6E7D;
+    --cadastro-bg: #F5F7FB;
+    --cadastro-border: #E5E7EB;
+    --cadastro-text: #202124;
+    --cadastro-muted: rgba(32, 33, 36, .72);
+
+    min-height: 80vh;
+    padding: 52px 24px 64px;
+
+    color: var(--cadastro-text);
+
+    background:
+        radial-gradient(
+            ellipse at 15% 20%,
+            rgba(84, 35, 247, .035),
+            transparent 40%
+        ),
+        radial-gradient(
+            ellipse at 85% 80%,
+            rgba(36, 79, 178, .025),
+            transparent 38%
+        ),
+        #F5F7FB;
+
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.cadastro-membro__container {
+    width: min(100%, 720px);
+    margin: 0 auto;
+}
+
+.cadastro-membro__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 32px;
+
+    color: var(--cadastro-purple);
+    font-size: 13px;
+    text-decoration: none;
+
+    transition: color 180ms ease;
+}
+
+.cadastro-membro__back svg {
+    width: 17px;
+    height: 17px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.cadastro-membro__back:hover {
+    color: var(--cadastro-blue);
+}
+
+.cadastro-membro__heading {
+    margin-bottom: 28px;
+}
+
+.cadastro-membro__eyebrow {
+    margin: 0 0 10px;
+
+    color: var(--cadastro-purple);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .09em;
+}
+
+.cadastro-membro__heading h1 {
+    margin: 0;
+
+    color: var(--cadastro-text);
+    font-size: clamp(30px, 5vw, 42px);
+    font-weight: 750;
+    letter-spacing: -.04em;
+    line-height: 1.15;
+}
+
+.cadastro-membro__description {
+    max-width: 540px;
+    margin: 14px 0 0;
+
+    color: var(--cadastro-muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.cadastro-membro__panel {
+    padding: 30px;
+
+    border: 1px solid var(--cadastro-border);
+    border-radius: 12px;
+
+    background: #F5F7FB;
+
+    box-shadow:
+        0 16px 40px rgba(32, 33, 36, .06),
+        0 0 30px rgba(84, 35, 247, .025);
+}
+
+.cadastro-membro__form {
+    display: flex;
+    flex-direction: column;
+    gap: 19px;
+}
+
+.cadastro-membro__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cadastro-membro__field label {
+    color: var(--cadastro-text);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.cadastro-membro__field input,
+.cadastro-membro__field textarea {
+    display: block;
+    width: 100%;
+    min-height: 45px;
+    padding: 12px 14px;
+
+    border: 1px solid var(--cadastro-border);
+    border-radius: 7px;
+    outline: none;
+
+    background: #F5F7FB;
+    color: var(--cadastro-text);
+
+    font-family: inherit;
+    font-size: 13px;
+
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        background 180ms ease;
+}
+
+.cadastro-membro__field textarea {
+    min-height: 115px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.cadastro-membro__field input::placeholder,
+.cadastro-membro__field textarea::placeholder {
+    color: rgba(32, 33, 36, .45);
+    opacity: 1;
+}
+
+.cadastro-membro__field input:hover,
+.cadastro-membro__field textarea:hover {
+    border-color: rgba(84, 35, 247, .35);
+}
+
+.cadastro-membro__field input:focus,
+.cadastro-membro__field textarea:focus {
+    border-color: var(--cadastro-purple);
+    background: #F5F7FB;
+
+    box-shadow: 0 0 0 3px rgba(84, 35, 247, .10);
+}
+
+.cadastro-membro__hint {
+    color: var(--cadastro-muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.cadastro-membro__divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    margin: 9px 0 1px;
+
+    color: var(--cadastro-purple);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.cadastro-membro__divider::after {
+    flex: 1;
+    height: 1px;
+
+    background: var(--cadastro-border);
+
+    content: "";
+}
+
+.cadastro-membro__actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    margin-top: 9px;
+    padding-top: 22px;
+
+    border-top: 1px solid var(--cadastro-border);
+}
+
+.cadastro-membro__button {
+    display: inline-flex;
+    min-height: 43px;
+
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 11px 17px;
+
+    border: 1px solid transparent;
+    border-radius: 7px;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 650;
+
+    text-decoration: none;
+    cursor: pointer;
+
+    transition:
+        background 180ms ease,
+        border-color 180ms ease,
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.cadastro-membro__button svg {
+    width: 17px;
+    height: 17px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.cadastro-membro__button--primary {
+    border-color: rgba(84, 35, 247, .25);
+
+    background: linear-gradient(
+        110deg,
+        var(--cadastro-purple),
+        var(--cadastro-blue),
+        var(--cadastro-teal)
+    );
+
+    color: #ffffff;
+
+    box-shadow: 0 6px 20px rgba(84, 35, 247, .14);
+}
+
+.cadastro-membro__button--primary:hover {
+    filter: brightness(1.08);
+
+    box-shadow: 0 9px 26px rgba(84, 35, 247, .22);
+
+    transform: translateY(-2px);
+}
+
+.cadastro-membro__button--secondary {
+    border-color: var(--cadastro-border);
+
+    background: #F5F7FB;
+    color: var(--cadastro-text);
+}
+
+.cadastro-membro__button--secondary:hover {
+    border-color: rgba(84, 35, 247, .35);
+
+    background: #ffffff;
+    color: var(--cadastro-purple);
+}
+
+.cadastro-membro__button:focus-visible,
+.cadastro-membro__back:focus-visible {
+    outline: 2px solid var(--cadastro-purple);
+    outline-offset: 4px;
+}
+
+.cadastro-membro__footnote {
+    margin: 17px 0 0;
+
+    color: var(--cadastro-muted);
+    font-size: 11px;
+}

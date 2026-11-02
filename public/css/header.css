@@ -1,0 +1,257 @@
+
+
+:root {
+    --nexus-bg: #F5F7FB;
+    --nexus-purple: #5423F7;
+    --nexus-blue: #244FB2;
+    --nexus-teal: #0A6E7D;
+    --nexus-border: #E5E7EB;
+    --nexus-text: #202124;
+    --nexus-muted: rgba(32, 33, 36, .72);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.nexus-header,
+.nexus-header * {
+    box-sizing: border-box;
+}
+
+.nexus-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    width: 100%;
+
+    background: rgba(245, 247, 251, .94);
+
+    border-bottom: 1px solid var(--nexus-border);
+
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+}
+
+
+.nexus-header__inner {
+    width: min(100% - 48px, 1320px);
+    min-height: 72px;
+
+    margin-inline: auto;
+
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+
+    align-items: center;
+    gap: 28px;
+}
+
+.nexus-brand {
+    display: inline-flex;
+    align-items: center;
+    justify-self: start;
+
+    gap: 10px;
+
+    color: var(--nexus-text);
+    text-decoration: none;
+}
+
+.nexus-brand__symbol {
+    display: block;
+
+    width: 34px;
+    height: 34px;
+
+    flex: 0 0 auto;
+}
+
+.nexus-brand__word {
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+
+    color: var(--nexus-purple);
+}
+
+
+.nexus-nav {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: clamp(22px, 3.2vw, 44px);
+
+    height: 72px;
+}
+
+.nexus-nav__link {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+
+    height: 100%;
+
+    color: var(--nexus-muted);
+
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+
+    text-decoration: none;
+
+    transition: color 180ms ease;
+}
+
+
+.nexus-nav__link::after {
+    position: absolute;
+
+    right: 0;
+    bottom: 15px;
+    left: 0;
+
+    height: 2px;
+
+    border-radius: 2px;
+
+    background: linear-gradient(
+        90deg,
+        #5423F7,
+        #244FB2,
+        #0A6E7D
+    );
+
+    content: "";
+
+    transform: scaleX(0);
+    transform-origin: center;
+
+    transition: transform 180ms ease;
+}
+
+.nexus-nav__link:hover,
+.nexus-nav__link:focus-visible,
+.nexus-nav__link--active {
+    color: var(--nexus-purple);
+}
+
+.nexus-nav__link:hover::after,
+.nexus-nav__link:focus-visible::after,
+.nexus-nav__link--active::after {
+    transform: scaleX(1);
+}
+
+
+.nexus-login {
+    justify-self: end;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 40px;
+    padding: 0 17px;
+
+    border: 1px solid rgba(84, 35, 247, .25);
+    border-radius: 999px;
+
+    color: #F5F7FB;
+
+    background: #5423F7;
+
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    box-shadow: 0 4px 14px rgba(84, 35, 247, .12);
+
+    transition:
+        background 180ms ease,
+        box-shadow 180ms ease,
+        transform 180ms ease;
+}
+
+.nexus-login svg {
+    width: 16px;
+    height: 16px;
+
+    fill: none;
+    stroke: currentColor;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+}
+
+.nexus-login:hover {
+    color: #FFFFFF;
+
+    box-shadow: 0 6px 18px rgba(84, 35, 247, .24);
+
+    transform: translateY(-1px);
+}
+
+.nexus-login:active {
+    transform: translateY(0);
+}
+.nexus-menu-toggle {
+    display: none;
+
+    width: 42px;
+    height: 42px;
+
+    padding: 10px;
+
+    border: 1px solid var(--nexus-border);
+    border-radius: 12px;
+
+    background: rgba(84, 35, 247, .05);
+
+    cursor: pointer;
+}
+
+.nexus-menu-toggle span {
+    display: block;
+
+    width: 100%;
+    height: 2px;
+
+    margin: 4px 0;
+
+    border-radius: 4px;
+
+    background: var(--nexus-blue);
+
+    transition:
+        transform 180ms ease,
+        opacity 180ms ease;
+}
+
+.nexus-menu-toggle[aria-expanded="true"] span:first-child {
+    transform: translateY(6px) rotate(45deg);
+}
+
+.nexus-menu-toggle[aria-expanded="true"] span:nth-child(2) {
+    opacity: 0;
+}
+
+.nexus-menu-toggle[aria-expanded="true"] span:last-child {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
+.nexus-header a:focus-visible,
+.nexus-menu-toggle:focus-visible {
+    outline: 2px solid var(--nexus-purple);
+    outline-offset: 4px;
+}
