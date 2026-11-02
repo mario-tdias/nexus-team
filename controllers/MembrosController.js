@@ -1,177 +1,68 @@
 
 import express from "express";
-import Membro from "../models/Membros.js";
-import { posts } from "./BlogController.js";
 
-import Auth from "../middlewares/Auth.js";
-import Admin from "../middlewares/Admin.js";
+const router = express.Router();
 
-const route = express.Router();
-
-function apenasAdmin(req, res, next) {
-    if (!req.session?.user) {
-        return res.redirect("/login");
+export const membros = [
+    {
+        id: 1,
+        nome: "Laura Mathias",
+        iniciais: "LM",
+        cargo: "UX/UI Designer",
+        descricao: "Contribui para o desenvolvimento das funcionalidades e integração das soluções da equipe.",
+        imagem: "/images/membros/laura-mathias.jpg",
+        github: "",
+        linkedin: "",
+        portfolio: ""
+    },
+    {
+        id: 2,
+        nome: "Luiz Henrique Cubas",
+        iniciais: "LC",
+        cargo: "Documentação e Design",
+        descricao: "Responsável pela organização da documentação do projeto e pelo desenvolvimento dos elementos visuais, contribuindo para a clareza das informações e a identidade visual da equipe.",
+        imagem: "/images/membros/luiz-cubas.jpg",
+        github: "",
+        linkedin: "",
+        portfolio: ""
+    },
+    {
+        id: 3,
+        nome: "Mario Takahashi",
+        iniciais: "MT",
+        cargo: "Desenvolvedor Back-End",
+        descricao: "Trabalha na lógica da aplicação, nas APIs e na integração dos dados.",
+        imagem: "/images/membros/mario-takahashi.jpg",
+        github: "",
+        linkedin: "",
+        portfolio: ""
+    },
+    {
+        id: 4,
+        nome: "Millie Morelli",
+        iniciais: "MM",
+        cargo: "Documentação e Desenvolver Front-End",
+        descricao: "Responsável pela elaboração e organização da documentação do projeto, além do desenvolvimento das interfaces front-end, buscando garantir uma navegação intuitiva e uma boa experiência para os usuários.",
+        imagem: "/images/membros/millie-morelli.jpg",
+        github: "",
+        linkedin: "",
+        portfolio: ""
+    },
+    {
+        id: 5,
+        nome: "Victor Theodoro",
+        iniciais: "VT",
+        cargo: "Desenvolvedor Full-Stack",
+        descricao: "Responsável pelo desenvolvimento e integração das funcionalidades do sistema, atuando tanto na construção das interfaces quanto na implementação da lógica e dos recursos do backend.",
+        imagem: "/images/membros/victor-theodoro.jpg",
+        github: "",
+        linkedin: "",
+        portfolio: ""
     }
+];
 
-    if (Number(req.session.user.ADM) !== 1) {
-        return res.status(403).send(
-            "Acesso negado. Apenas administradores podem realizar esta ação."
-        );
-    }
-
-    next();
-}
-
-
-// Rota principal da landing page
-route.get("/", function (req, res) {
-    Membro.findAll()
-        .then(membros => {
-            res.render("index", {
-                title: "Nexus | Equipe",
-                membros: membros,
-                posts: posts
-            });
-        })
-        .catch(error => {
-            console.log(
-                `Ocorreu um erro ao listar os membros. ERRO: ${error}`
-            );
-        });
+router.use((req, res) => {
+    res.redirect("/#equipe");
 });
 
-// Rota de listagem dos membros
-route.get("/membros", function (req, res) {
-    Membro.findAll()
-        .then(membros => {
-            res.render("membros", {
-                membros: membros
-            });
-        })
-        .catch(error => {
-            console.log(
-                `Ocorreu um erro ao listar os membros. ERRO: ${error}`
-            );
-        });
-});
-
-// ROTA DE CADASTRO DE MEMBRO
-route.get("/membros/cadastrar", Auth, Admin,(req, res) => {
-
-    // Abrindo a página de cadastro
-    res.render("MembrosCadastrar");
-
-});
-
-// ROTA QUE CADASTRA O MEMBRO
-route.post("/membros/cadastrar", Auth, Admin, (req, res) => {
-
-    // Coletando os dados do formulário
-    const nome = req.body.nome;
-    const iniciais = req.body.iniciais;
-    const cargo = req.body.cargo;
-    const descricao = req.body.descricao;
-    const imagem = req.body.imagem;
-    const github = req.body.github;
-    const linkedin = req.body.linkedin;
-    const portfolio = req.body.portfolio;
-
-    // Chamando o model para gravar os dados no banco
-    Membro.create({
-        nome: nome,
-        iniciais: iniciais,
-        cargo: cargo,
-        descricao: descricao,
-        imagem: imagem,
-        github: github,
-        linkedin: linkedin,
-        portfolio: portfolio
-
-    }).then(() => {
-
-        // Redirecionando após o cadastro
-        res.redirect("/");
-
-    }).catch(error => {
-
-        console.log(
-            `Ocorreu um erro ao cadastrar o membro. ERRO: ${error}`
-        );
-
-    });
-
-});
-
-//ROTA DE EDIÇÃO DE membro
-route.get("/membros/editar/:id", apenasAdmin, Auth, Admin,  (req, res)=>{
-    //Coletando o parâmetro do URL
-    const id = req.params.id;
-    //Buscando o clube no banco pelo ID
-    Membro.findByPk(id).then(membro=>{
-        res.render("MembrosEditar",{
-            //enviando um objeto com os dados do membro para a página
-            membro: membro,
-        })
-    }).catch(error=>(`Ocorreu um erro ao buscar o clube. ERRO${error}`));
-});
-
-// ROTA QUE ALTERA OS DADOS DO MEMBRO
-route.post("/membros/alterar", apenasAdmin, Auth, Admin, (req, res) => {
-
-    // Coletando os dados do formulário
-    const id = req.body.id;
-    const nome = req.body.nome;
-    const iniciais = req.body.iniciais;
-    const cargo = req.body.cargo;
-    const descricao = req.body.descricao;
-    const imagem = req.body.imagem;
-    const github = req.body.github;
-    const linkedin = req.body.linkedin;
-    const portfolio = req.body.portfolio;
-
-    // Chamando o model para alterar os dados no banco
-    Membro.update(
-        {
-            nome: nome,
-            iniciais: iniciais,
-            cargo: cargo,
-            descricao: descricao,
-            imagem: imagem,
-            github: github,
-            linkedin: linkedin,
-            portfolio: portfolio
-        },
-        {
-            where: {
-                id: id
-            }
-        }
-    )
-    .then(() => {
-        res.redirect("/");
-    })
-    .catch(error => {
-        console.log(
-            `Ocorreu um erro ao alterar o membro. ERRO: ${error}`
-        );
-    });
-
-});
-
-// rota de excluir membro
-route.get("/membros/excluir/:id", apenasAdmin, Auth, Admin,  (req, res) => {
-    const id = req.params.id;
-
-    Membro.destroy({
-        where: {
-            id: id,
-        },
-    }).then(()=> {
-        res.redirect("/");
-    }).catch(error=>{
-        console.log(`Ocorreu um erro ao excluir o membro. ERRO: ${error}`);
-    });
-});
-
-
-export default route;
+export default router;

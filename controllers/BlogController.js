@@ -1,33 +1,31 @@
 
 import express from "express";
 
-
-const route = express.Router();
+const router = express.Router();
 
 export const posts = [
     {
         id: 1,
-        titulo: "Primeira atualização da Nexus",
-        autor: "Mario Takahashi",
-        data: "18/10/2026",
-        categoria: "Atualização",
-        resumo: "Confira as novidades e o andamento do projeto Nexus.",
-        conteudo: "Aqui ficará o conteúdo completo da publicação."
+        titulo: "Conheça a equipe Nexus",
+        categoria: "Equipe",
+        autor: "Equipe Nexus",
+        data: "02/11/2026",
+        imagem: "/images/nexus-hero-bg.png",
+        resumo: "Conheça os integrantes da Nexus, suas áreas de atuação e como cada um contribui para os projetos da equipe."
     },
     {
         id: 2,
-        titulo: "Novidades no desenvolvimento",
-        autor: "Laura Mathias",
-        data: "18/10/2026",
-        categoria: "Desenvolvimento",
-        resumo: "Compartilhando os avanços recentes da equipe.",
-        conteudo: "Aqui ficará o conteúdo completo desta publicação."
+        titulo: "Tecnologia, inovação e colaboração",
+        categoria: "Tecnologia",
+        autor: "Equipe Nexus",
+        data: "02/11/2026",
+        imagem: "/images/nexus-hero-bg.png",
+        resumo: "Acompanhe as iniciativas, ideias e soluções desenvolvidas pela equipe Nexus."
     }
 ];
 
-// Rota do blog
-route.get("/blog", (req, res) => {
+router.use((req, res) => {
     res.redirect("/#blog");
 });
 
-export default route;
+export default router;
