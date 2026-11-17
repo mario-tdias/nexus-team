@@ -1,98 +1,119 @@
 import express from "express";
-import Usuario from "../models/Usuario.js";
 import bcrypt from "bcrypt";
+import pool from "../config/db.js";
 
 const router = express.Router();
 
-// Rota de login
+// Formulário de login.
 router.get("/login", (req, res) => {
     res.render("login");
 });
 
-// Rota de logout
-router.get("/logout", (req, res)=>{
-  //limpa a sessão
-  req.session.user = undefined;
-  //Redireciona para a home
-  res.redirect("/");
-})
+// Encerra a sessão.
+router.get("/logout", (req, res, next) => {
+    if (!req.session) return res.redirect("/");
 
-//ROTA DE AUTENTICAÇÃO
-router.post("/autenticar", (req, res)=>{
-    //Coletando os dados do usuário
-    const email = req.body.email
-    const password = req.body.password
-    //Buscando o usuário no banco
-    Usuario.findOne({where: {email: email}}).then((usuario) =>{
-        //SE O USUÁRIO EXISTIR
-        if(usuario != undefined){
-            //VALIDANDO A SENHA(HASH)
-            const senhaCorreta = bcrypt.compareSync(password, usuario.password);
-            //Se A SENHA FOR VÁLIDA
-            if(senhaCorreta){
-                //AUTORIZA O LOGIN E CRIA A SESÃO PARA O USUÁRIO
-                req.session.user = {
-                  id: usuario.id,
-                  email: usuario.email,
-                  ADM: Number(usuario.ADM),
-                };
-              
-                //res.send(`Usuário logado: <br> 
-                  //ID: ${req.session.user["id"]} <br>
-                 // E-mail: ${req.session.user["email"]}`);
-
-                res.redirect("/");
-                //SE A SENHA FOR INVÁLIDA      
-            }else{
-                res.render("loginInvalido");
-            }
-        //SE O USUÁRIO NÃO EXISTIR    
-        }else{
-            res.send(`Usuário não existe!<br>
-                Verifique os dados e tente novamente!<br>
-                <a href="/login">Voltar</a>`);
-        }
+    req.session.destroy(error => {
+        if (error) return next(error);
+        res.clearCookie("nexus.sid", { path: "/" });
+        return res.redirect("/");
     });
 });
 
-// Rota de cadastro
-router.get("/cadastro", (req, res) => {
-  res.render("cadastro",{
-    loggedOut: true,
-  });
+// Autenticação por e-mail e senha.
+router.post("/autenticar", async (req, res, next) => {
+    try {
+        const email = req.body.email?.trim().toLowerCase();
+        const password = req.body.password || "";
+
+        if (!email || !password) {
+            return res.status(400).render("loginInvalido");
+        }
+
+        const [rows] = await pool.execute(
+            "SELECT id, email, password, ADM FROM usuarios WHERE email = ? LIMIT 1",
+            [email]
+        );
+
+        if (!rows.length) {
+            return res.status(401).send(
+                'Usuário não encontrado. Verifique os dados e tente novamente. <a href="/login">Voltar</a>'
+            );
+        }
+
+        const usuario = rows[0];
+        const senhaCorreta = await bcrypt.compare(password, usuario.password);
+
+        if (!senhaCorreta) {
+            return res.status(401).render("loginInvalido");
+        }
+
+        // Regenera o ID da sessão após o login para reduzir risco de session fixation.
+        return req.session.regenerate(error => {
+            if (error) return next(error);
+
+            req.session.user = {
+                id: usuario.id,
+                email: usuario.email,
+                ADM: Number(usuario.ADM)
+            };
+
+            return req.session.save(saveError => {
+                if (saveError) return next(saveError);
+                return res.redirect("/");
+            });
+        });
+    } catch (error) {
+        return next(error);
+    }
 });
 
-router.post("/cadastro/novo", (req, res) => {
-  //coletar os dados do formulário
-  const email = req.body.email;
-  const password = req.body.password;
+// Formulário de cadastro. Novas contas começam sem permissão administrativa.
+router.get("/cadastro", (req, res) => {
+    res.render("cadastro", { loggedOut: true });
+});
 
-  //Verificando se o usuário já existe
-  Usuario.findOne({ where: { email: email } }).then((usuario) => {
-    //Usuário não encontrado
-    if (usuario == undefined) {
-      //Cadastra o usuário
-      //GERANDO O HASH DE SENHA
-      const salt = bcrypt.genSaltSync(10);
-      const hash = bcrypt.hashSync(password, salt);
+router.post("/cadastro/novo", async (req, res, next) => {
+    try {
+        const email = req.body.email?.trim().toLowerCase();
+        const password = req.body.password || "";
 
-      //Enviando para o banco de dados
-       Usuario.create({
-        email: email,
-        password: hash,
-        ADM: 0
-      })
-        .then(() => res.redirect("/login"))
-        .catch((error) => {
-          console.log(`Erro ao criar a conta. ERRO: ${error}`);
-        });
-        //Usuário já cadastrado
-    }else{
-        res.send(`Usuário já cadastrado!<br>
-            Verifique os dados e tente novamente.<br>
-            <a href="/login">Voltar</a>`)
+        if (!email || !password) {
+            return res.status(400).send("Informe e-mail e senha.");
+        }
+
+        if (password.length < 8) {
+            return res.status(400).send("A senha deve possuir pelo menos 8 caracteres.");
+        }
+
+        const [existing] = await pool.execute(
+            "SELECT id FROM usuarios WHERE email = ? LIMIT 1",
+            [email]
+        );
+
+        if (existing.length) {
+            return res.status(409).send(
+                'Usuário já cadastrado. <a href="/login">Voltar ao login</a>'
+            );
+        }
+
+        const hash = await bcrypt.hash(password, 10);
+
+        await pool.execute(
+            "INSERT INTO usuarios (email, password, ADM) VALUES (?, ?, 0)",
+            [email, hash]
+        );
+
+        return res.redirect("/login");
+    } catch (error) {
+        // Também trata uma tentativa simultânea de cadastrar o mesmo e-mail.
+        if (error.code === "ER_DUP_ENTRY") {
+            return res.status(409).send(
+                'Este e-mail já está cadastrado. <a href="/login">Voltar ao login</a>'
+            );
+        }
+        return next(error);
     }
-  });
-})
+});
 
 export default router;
